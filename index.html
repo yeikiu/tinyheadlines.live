@@ -2,111 +2,521 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* Google Analytics 4. Replace the placeholder with the real Measurement ID; nothing else to touch.
+   Consent Mode v2: everything denied by default, gtag.js is only fetched after the visitor accepts. */
+var GA_ID='G-XXXXXXXXXX';
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tiny Headlines — today's real news as tiny 3D dioramas, live 24/7</title>
 <meta name="description" content="A 24/7 live news channel: today's real headlines, rebuilt as tiny 3D dioramas. Sources credited on screen. Vote for the next story from chat.">
+<meta name="theme-color" content="#0a0f1e">
 <link rel="icon" href="favicon.png">
+<link rel="canonical" href="https://tinyheadlines.live/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tiny Headlines">
 <meta property="og:title" content="Tiny Headlines — live 24/7">
 <meta property="og:description" content="Today's real headlines, rebuilt as tiny 3D dioramas. Live now on YouTube and Twitch.">
 <meta property="og:image" content="https://tinyheadlines.live/assets/og.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
 <meta property="og:url" content="https://tinyheadlines.live/">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-:root{--bg:#0e1424;--panel:#161f36;--ink:#f3f1ea;--mut:#a9b1c7;--yel:#ffd23f;--red:#e5383b}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#24325a 0,var(--bg) 60%);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-a{color:var(--yel)}
-.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-header{display:flex;align-items:center;gap:14px;padding:18px 0}
-header img{width:54px;height:54px}
-header b{font-size:22px;letter-spacing:.5px}
-header nav{margin-left:auto;display:flex;gap:18px;font-size:15px}
-header nav a{color:var(--mut);text-decoration:none}
-.live{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:700;font-size:13px;letter-spacing:1px;padding:4px 10px;border-radius:4px}
-.live:before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:p 1.4s infinite}
-@keyframes p{50%{opacity:.25}}
-.hero{display:grid;grid-template-columns:1fr;gap:22px;padding:10px 0 40px}
-.player{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px #0008;background:#000}
-.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-h1{font-size:clamp(28px,4vw,46px);line-height:1.1;margin:0 0 10px}
-.lead{color:var(--mut);font-size:19px;margin:0 0 18px;max-width:760px}
-.btns{display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-block;padding:11px 18px;border-radius:8px;font-weight:700;text-decoration:none;color:#111;background:var(--yel)}
-.btn.tw{background:#9146ff;color:#fff}.btn.yt{background:#ff0033;color:#fff}.btn.gh{background:transparent;color:var(--ink);border:1px solid #fff4}
-section{padding:46px 0;border-top:1px solid #ffffff14}
-h2{font-size:28px;margin:0 0 18px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.card{background:var(--panel);border-radius:12px;padding:20px}
-.card h3{margin:0 0 6px;font-size:19px}.card p{margin:0;color:var(--mut)}
-.num{color:var(--yel);font-weight:800;font-size:14px;letter-spacing:1px}
-code{background:#0006;padding:2px 7px;border-radius:5px;color:var(--yel)}
-.biz{background:linear-gradient(135deg,#1d2a4d,#2a1d3d);border-radius:16px;padding:30px}
-.biz ul{color:var(--mut);padding-left:20px}
-footer{padding:30px 0 50px;color:var(--mut);font-size:14px}
-@media(max-width:700px){header nav{display:none}}
-@media(min-width:980px){.hero{grid-template-columns:1.7fr 1fr;align-items:center}}
+@font-face{font-family:"Bricolage";src:url(assets/fonts/bricolage-grotesque.woff2) format("woff2");font-weight:200 800;font-display:swap}
+:root{
+  --night:#0a0f1e;--deep:#070b16;--navy:#121a31;--line:#ffffff1f;
+  --ink:#f5f2e9;--mut:#aab3ca;--yel:#ffd23f;--red:#ff3d3d;--gold:#c9a15f;
+  --yt:#ff0033;--tw:#a970ff;
+  --pad:clamp(20px,5vw,72px);--max:1240px;
+  --sans:"Bricolage",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+}
+*,*:before,*:after{box-sizing:border-box}
+html{overflow-x:clip;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--ink);font:400 18px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:800;line-height:1;letter-spacing:-.035em;text-wrap:balance}
+:focus-visible{outline:3px solid var(--yel);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:fixed;left:12px;top:-60px;z-index:99;background:var(--yel);color:#111;padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+
+/* ───────── live dot / badge ───────── */
+.live{display:inline-flex;align-items:center;gap:.5em;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.live i{width:.72em;height:.72em;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 #ff3d3d99;animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 .7em #ff3d3d00}100%{box-shadow:0 0 0 0 #ff3d3d00}}
+
+/* ───────── buttons ───────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;min-height:48px;padding:0 22px;border:0;border-radius:999px;font:700 16px/1 var(--sans);letter-spacing:-.01em;text-decoration:none;cursor:pointer;color:#14110a;background:var(--yel);transition:transform .2s,background .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px #ffd23f40}
+.btn svg{width:20px;height:20px;flex:none}
+.btn.ghost{background:#ffffff14;color:var(--ink);box-shadow:inset 0 0 0 1px #ffffff33}
+.btn.ghost:hover{background:#ffffff24;box-shadow:inset 0 0 0 1px #ffffff66}
+.btn.icon{width:48px;padding:0}
+
+/* ───────── HERO: the stream is the page ───────── */
+.stage{position:relative;height:100vh;height:100svh;min-height:300px;overflow:hidden;display:grid;place-items:center;
+  background:
+   radial-gradient(1px 1px at 12% 22%,#fff9 50%,#0000 51%),radial-gradient(1px 1px at 82% 14%,#fff7 50%,#0000 51%),
+   radial-gradient(1.5px 1.5px at 67% 78%,#fff6 50%,#0000 51%),radial-gradient(1px 1px at 31% 88%,#fff8 50%,#0000 51%),
+   radial-gradient(1px 1px at 92% 58%,#fff6 50%,#0000 51%),radial-gradient(1.5px 1.5px at 6% 64%,#fff5 50%,#0000 51%),
+   radial-gradient(90% 70% at 50% 40%,#1b2750 0,var(--deep) 70%)}
+.screen{position:relative;width:min(100vw,177.778vh);width:min(100vw,177.778svh);aspect-ratio:16/9;background:#05070d url(assets/logo.webp) center/min(34%,220px) no-repeat}
+.screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}
+.needs-tap .screen iframe,.stage:fullscreen .screen iframe{pointer-events:auto}
+
+.chip,.ctl,.cue{transition:opacity .5s,transform .5s}
+/* floating brand chip, top-centre: the one spot the broadcast leaves empty */
+.chip{position:absolute;z-index:3;top:max(14px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;max-width:min(62vw,820px);padding:7px 20px 7px 8px;border-radius:999px;background:#0a0f1ecc;-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:inset 0 0 0 1px #ffffff24,0 10px 40px #0008;text-decoration:none}
+.chip img{width:40px;height:40px;flex:none}
+.chip b{font-weight:800;font-size:17px;letter-spacing:-.02em;white-space:nowrap}
+.chip .live{padding:5px 9px;border-radius:6px;background:#ff3d3d26;color:#ffd9d9}
+.chip-pitch{font-size:15px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:14px;border-left:1px solid var(--line)}
+.panel{display:contents}
+.panel h1,.panel .lede,.panel .where,.planet{display:none}
+.ctl{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:max(18px,env(safe-area-inset-bottom));white-space:nowrap;display:flex;gap:10px;align-items:center}
+.ctl .btn{box-shadow:0 10px 40px #000a}
+.ctl .btn.ghost{background:#0a0f1ecc;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px #ffffff33,0 10px 40px #000a}
+#snd[aria-pressed=true]{background:#0a0f1ecc;color:var(--ink);box-shadow:inset 0 0 0 1px #ffffff33}
+#snd .on,#snd[aria-pressed=true] .off{display:none}
+#snd[aria-pressed=true] .on{display:inline}
+.cue{font-weight:700;font-size:14px;gap:.4em;padding:0 18px}
+.cue svg{animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(4px)}}
+/* cinema mode: step out of the way when the viewer is just watching */
+.idle .chip{opacity:0;transform:translate(-50%,-8px);pointer-events:none}
+.idle .ctl .cue,.idle .ctl #fs,.idle.sound .ctl #snd{opacity:0;pointer-events:none}
+.stage:fullscreen .chip,.stage:fullscreen .cue,.stage:fullscreen .panel>:not(.ctl){display:none}
+
+@media (max-width:1100px){.chip-pitch{display:none}}
+
+/* portrait & squarish viewports: stream on top, a designed stage underneath */
+@media (max-aspect-ratio:3/2){
+  .stage:not(:fullscreen){display:flex;flex-direction:column;place-items:stretch;min-height:560px}
+  .stage:not(:fullscreen) .chip{position:static;transform:none;max-width:none;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:10px var(--pad);padding-top:max(10px,env(safe-area-inset-top));opacity:1;gap:10px}
+  .stage:not(:fullscreen) .chip .live{margin-left:auto}
+  .stage:not(:fullscreen) .chip-pitch{display:none}
+  .stage:not(:fullscreen) .screen{width:100%;flex:none;box-shadow:0 0 0 1px var(--line),0 30px 80px #000c}
+  .stage:not(:fullscreen) .panel{position:relative;flex:1;display:flex;flex-direction:column;gap:18px;padding:clamp(22px,4.5vh,44px) var(--pad) max(18px,env(safe-area-inset-bottom));min-height:0}
+  .stage:not(:fullscreen) .panel h1{display:block;font-size:clamp(34px,10.4vw,72px);max-width:11em}
+  .stage:not(:fullscreen) .panel h1 em{font-style:normal;color:var(--yel)}
+  .stage:not(:fullscreen) .panel .lede{display:block;color:var(--mut);font-size:clamp(16px,4.4vw,22px);max-width:26em}
+  .stage:not(:fullscreen) .ctl{position:static;transform:none;white-space:normal;flex-wrap:wrap;opacity:1}
+  .stage:not(:fullscreen) .ctl .btn{box-shadow:none;opacity:1!important;pointer-events:auto!important}
+  .stage:not(:fullscreen) .ctl .btn.ghost{box-shadow:inset 0 0 0 1px #ffffff33;background:#ffffff14}
+  .stage:not(:fullscreen) .cue{position:absolute;left:var(--pad);bottom:max(18px,env(safe-area-inset-bottom));background:none!important;box-shadow:none!important;padding:0;min-height:44px;color:var(--mut);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .stage:not(:fullscreen) .planet{display:block;position:absolute;right:-70px;bottom:-96px;width:min(64vw,300px);filter:drop-shadow(0 0 60px #3b6cff55);animation:float 9s ease-in-out infinite;pointer-events:none}
+}
+@media (max-aspect-ratio:3/2) and (max-height:700px){.stage:not(:fullscreen) .panel .lede{display:none}}
+@keyframes float{50%{transform:translateY(-10px) rotate(-2deg)}}
+
+/* ───────── ticker tape (the ring of the logo, unrolled) ───────── */
+.tape{position:relative;z-index:2;background:var(--yel);color:#14110a;overflow:hidden;border-block:3px solid #14110a;transform:rotate(-1deg) scale(1.02);margin-top:-14px;box-shadow:0 14px 40px #0009}
+.tape div{display:flex;width:max-content;animation:roll 40s linear infinite}
+.tape span{display:flex;align-items:center;gap:22px;padding:11px 11px;font-weight:800;font-size:clamp(15px,1.6vw,20px);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.tape span:after{content:"";width:.6em;height:.6em;border-radius:50%;background:#d81f1f}
+.tape em{font-style:normal;display:flex;align-items:center;gap:22px}
+.tape em:before{content:"•";opacity:.55}
+@keyframes roll{to{transform:translateX(-50%)}}
+
+/* ───────── layout ───────── */
+section{padding:clamp(72px,11vw,150px) var(--pad) 0}
+.in{max-width:var(--max);margin:0 auto}
+.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:22px;color:var(--yel);font:700 13px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.eyebrow:before{content:"";width:28px;height:2px;background:currentColor}
+h2{font-size:clamp(42px,7.4vw,104px)}
+h2 em{font-style:normal;color:var(--yel)}
+.lead{color:var(--mut);font-size:clamp(18px,1.7vw,23px);line-height:1.5;max-width:34em;text-wrap:pretty}
+.lead strong{color:var(--ink);font-weight:600}
+
+/* intro */
+.intro .in{display:grid;gap:32px 64px;align-items:end}
+.watch{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn.yt{background:var(--yt);color:#fff}.btn.yt:hover{box-shadow:0 10px 30px #ff003355}
+.btn.tw{background:#7c3aed;color:#fff}.btn.tw:hover{box-shadow:0 10px 30px #7c3aed66}
+@media(min-width:900px){.intro .in{grid-template-columns:1.25fr 1fr}}
+
+/* reel of real dioramas */
+.reel{margin-top:clamp(48px,7vw,90px);overflow:hidden;padding:18px 0 26px;-webkit-mask:linear-gradient(90deg,#0000,#000 8%,#000 92%,#0000);mask:linear-gradient(90deg,#0000,#000 8%,#000 92%,#0000)}
+.reel ul{list-style:none;margin:0;padding:0;display:flex;gap:clamp(14px,2vw,26px);width:max-content;animation:roll 70s linear infinite}
+.reel:hover ul,.reel:focus-within ul{animation-play-state:paused}
+.reel li{position:relative;width:clamp(240px,27vw,380px);border-radius:22px;overflow:hidden;background:var(--navy);box-shadow:0 0 0 2px var(--gold),0 20px 50px #0009;transition:transform .4s}
+.reel li:nth-child(odd){transform:rotate(-1.2deg)}.reel li:nth-child(even){transform:rotate(1deg) translateY(8px)}
+.reel li:hover{transform:scale(1.03)}
+.reel img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.reel small{position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:7px;background:#0a0f1ed9;font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--yel)}
+
+/* how it works */
+.steps{list-style:none;margin:clamp(40px,6vw,80px) 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--line)}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:6px 26px;padding:32px 0;border-bottom:1px solid var(--line)}
+.steps .n{grid-row:span 2;font-weight:800;font-size:clamp(64px,8vw,120px);line-height:.8;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1.5px var(--yel);min-width:1.25em}
+.steps h3{font-size:clamp(24px,2.4vw,34px);letter-spacing:-.03em;line-height:1.05;align-self:end}
+.steps p{color:var(--mut);max-width:30em}
+.steps .tag{display:block;margin-bottom:10px;font:700 12px/1 var(--mono);letter-spacing:.16em;color:var(--yel)}
+@media(min-width:900px){
+  .steps{grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+  .steps li{grid-template-columns:1fr;padding:36px 36px 44px 0;border-bottom:0}
+  .steps li+li{padding-left:36px;border-left:1px solid var(--line)}
+  .steps .n{grid-row:auto;margin-bottom:34px}
+  .steps h3{align-self:start}
+  .steps li{align-content:start}
+}
+.note{margin-top:30px;display:flex;gap:12px;align-items:baseline;color:var(--mut);font-size:16px}
+.note:before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--yel);transform:translateY(-1px)}
+
+/* play along */
+.play .in{display:grid;gap:48px 72px;align-items:start}
+@media(min-width:980px){.play .in{grid-template-columns:1fr 1fr}.play .poll{position:sticky;top:40px;margin-top:10px}}
+.cmds{margin:38px 0 0;border-top:1px solid var(--line)}
+.cmds div{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.cmds dt{font:700 clamp(19px,2vw,26px)/1 var(--mono);color:var(--yel);letter-spacing:-.02em;white-space:nowrap}
+.cmds dt i{font-style:normal;color:var(--mut);font-weight:400;padding:0 .2em}
+.cmds dd{margin:0;color:var(--ink);font-size:clamp(16px,1.4vw,19px)}
+.poll{position:relative;padding:26px;border-radius:26px;background:linear-gradient(160deg,#18223f,#0f1630);box-shadow:inset 0 0 0 1px var(--line),0 30px 80px #0008}
+.poll header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.poll header b{font:700 12px/1 var(--mono);letter-spacing:.16em;color:var(--mut)}
+.bar{display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:center;margin-top:12px}
+.bar b{display:grid;place-items:center;height:34px;border-radius:9px;background:#ffffff12;font:700 15px/1 var(--mono)}
+.bar span{height:34px;border-radius:9px;background:#ffffff0d;overflow:hidden}
+.bar span:before{content:"";display:block;height:100%;width:var(--w);border-radius:9px;background:#ffffff38;transform-origin:left;animation:vote 7s ease-in-out infinite alternate}
+.bar.win b{background:var(--yel);color:#14110a}.bar.win span:before{background:var(--yel)}
+.bar:nth-child(3) span:before{animation-delay:-2.5s}.bar:nth-child(4) span:before{animation-delay:-5s}
+@keyframes vote{0%{transform:scaleX(.55)}50%{transform:scaleX(.8)}100%{transform:scaleX(1)}}
+.chat{list-style:none;margin:24px 0 0;padding:20px 0 0;border-top:1px solid var(--line);display:grid;gap:10px;font:500 15px/1.2 var(--mono)}
+.chat li{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.chat li:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chat u{text-decoration:none;color:var(--mut);min-width:5.2em}
+.poll footer{margin-top:20px;color:var(--mut);font-size:15px}
+.poll footer strong{color:var(--ink);font-weight:600}
+
+/* screens (B2B) */
+.biz{position:relative;overflow:hidden;border-radius:clamp(26px,3.4vw,48px);padding:clamp(28px,5.5vw,80px);background:var(--yel);color:#14110a;display:grid;gap:44px 56px;align-items:center}
+.biz .eyebrow{color:#14110a}
+.biz h2{font-size:clamp(40px,6vw,84px)}
+.biz .lead{color:#3a3115;margin-top:24px}
+.feats{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#14110a2e;border:1px solid #14110a2e;border-radius:18px;overflow:hidden}
+.feats li{padding:18px 18px 20px;background:var(--yel);font-size:15.5px;line-height:1.4;color:#3a3115}
+.feats b{display:block;margin-bottom:5px;font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.1;color:#14110a}
+.biz .cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:32px}
+.biz .btn{background:#14110a;color:var(--yel);min-height:56px;padding:0 28px;font-size:18px}
+.biz .btn:hover{box-shadow:0 12px 30px #14110a55}
+.biz .mail{font:600 16px/1 var(--mono);text-underline-offset:4px}
+.biz :focus-visible{outline-color:#14110a}
+.rig{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,2vw,24px);min-height:260px}
+.tv,.totem{position:relative;border-radius:14px;background:#0b0f1c;padding:7px;box-shadow:0 30px 60px #14110a66}
+.tv{flex:1;max-width:520px;margin-bottom:26px}
+.tv img{border-radius:8px;aspect-ratio:16/9;object-fit:cover;width:100%}
+.tv:after{content:"";position:absolute;left:50%;bottom:-26px;width:34%;height:26px;transform:translateX(-50%);background:linear-gradient(#0b0f1c,#0b0f1c) center top/22% 70% no-repeat,linear-gradient(#0b0f1c,#0b0f1c) center bottom/100% 30% no-repeat;border-radius:0 0 4px 4px}
+.totem{width:clamp(96px,31%,190px);flex:none}
+.totem img{border-radius:8px;aspect-ratio:9/16;object-fit:cover;width:100%}
+.rig small{position:absolute;top:14px;left:14px;padding:5px 8px;border-radius:6px;background:#0b0f1cd9;color:var(--yel);font:700 10px/1 var(--mono);letter-spacing:.12em}
+@media(min-width:980px){.biz{grid-template-columns:1fr 1fr}.rig{margin-right:calc(-1*clamp(10px,2vw,30px))}}
+@media(max-width:480px){.feats{grid-template-columns:1fr}}
+
+/* footer */
+footer.end{margin-top:clamp(80px,11vw,150px);padding:clamp(48px,6vw,80px) var(--pad) 40px;background:var(--deep);border-top:1px solid var(--line)}
+.end .in{display:grid;gap:36px}
+.sign{display:flex;align-items:center;gap:18px}
+.sign img{width:84px;height:84px}
+.sign b{display:block;font-size:clamp(30px,4vw,48px);font-weight:800;letter-spacing:-.035em;line-height:1}
+.sign span{color:var(--mut);font-size:16px}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.credits{padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:14.5px;line-height:1.7;display:flex;flex-wrap:wrap;gap:4px 26px}
+.credits a{color:var(--ink);text-underline-offset:3px}
+@media(min-width:900px){.end .in{grid-template-columns:1fr auto;align-items:center}.credits{grid-column:1/-1}}
+
+/* cookie consent */
+.ck{position:fixed;z-index:50;left:max(16px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom));width:min(400px,calc(100vw - 32px));padding:20px 20px 18px;border-radius:22px;background:#0d1326f2;-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:inset 0 0 0 1px #ffffff29,0 24px 70px #000c;animation:ckin .6s cubic-bezier(.2,.7,.2,1) both}
+.ck[hidden]{display:none}
+.ck b{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.ck b:before{content:"";width:10px;height:10px;border-radius:50%;background:var(--yel)}
+.ck p{margin-top:8px;color:var(--mut);font-size:15px;line-height:1.45}
+.ck div{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.ck .btn{min-height:44px;font-size:15px;padding:0 12px}
+.ck .btn:hover{transform:none}
+@keyframes ckin{from{opacity:0;transform:translateY(16px)}}
+.credits button{all:unset;cursor:pointer;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.credits button:focus-visible{outline:3px solid var(--yel);outline-offset:3px;border-radius:4px}
+
+/* reveal on scroll (only when JS is running) */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .rv.seen{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*:before,*:after{animation:none!important;transition:none!important}
+  .js .rv{opacity:1;transform:none}
+  .reel{overflow-x:auto}
+  .tape div{width:auto;justify-content:center}.tape span[aria-hidden]{display:none}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-  <img src="assets/logo.png" alt="Tiny Headlines logo">
-  <b>Tiny Headlines</b>
-  <nav><a href="#how">How it works</a><a href="#play">Play along</a><a href="#screens">For screens</a></nav>
-</header>
+<a class="skip" href="#about">Skip the live stream</a>
 
-<div class="hero">
-  <div class="player">
-    <iframe src="https://www.youtube.com/embed/live_stream?channel=UCrjkc1zcgonlAh-jf8eL4bg&autoplay=1&mute=1" title="Tiny Headlines live" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+<div class="stage" id="stage">
+  <a class="chip" href="#about" aria-label="Tiny Headlines, live 24/7. About the channel">
+    <img src="assets/logo.webp" width="40" height="40" alt="">
+    <b>Tiny Headlines</b>
+    <span class="live"><i></i>Live 24/7</span>
+    <span class="chip-pitch" aria-hidden="true">Today's real headlines, rebuilt as tiny 3D dioramas</span>
+  </a>
+
+  <div class="screen">
+    <iframe id="tv" src="https://www.youtube.com/embed/live_stream?channel=UCrjkc1zcgonlAh-jf8eL4bg&autoplay=1&mute=1&playsinline=1&controls=0&rel=0&iv_load_policy=3&enablejsapi=1" title="Tiny Headlines — live stream" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
   </div>
-  <div>
-    <span class="live">LIVE 24/7</span>
-    <h1>Today's real headlines, rebuilt as tiny 3D dioramas.</h1>
-    <p class="lead">Science, tech, economy, the internet and games. Every story comes from a trusted outlet, credited on screen, and gets its own miniature world while the camera orbits it.</p>
-    <div class="btns">
-      <a class="btn yt" href="https://www.youtube.com/@TinyHeadlinesLive">Watch on YouTube</a>
-      <a class="btn tw" href="https://www.twitch.tv/tinyheadlines">Watch on Twitch</a>
+
+  <div class="panel">
+    <h1 class="sr-desk">Today's real headlines, rebuilt as <em>tiny 3D dioramas.</em></h1>
+    <p class="lede">Science, tech, economy, the internet and games. Live, all day, every day.</p>
+    <div class="ctl">
+      <button class="btn" id="snd" type="button" aria-pressed="false">
+        <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6m0-6-5 6"/></svg>
+        <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>
+        <span class="off">Unmute</span><span class="on">Sound on</span>
+      </button>
+      <button class="btn ghost" id="fs" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        <span>Full screen</span>
+      </button>
+      <a class="btn ghost cue" href="#about">What is this?
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>
+      </a>
     </div>
+    <img class="planet" src="assets/logo.webp" width="400" height="394" alt="">
   </div>
 </div>
 
-<section id="how">
-  <h2>How it works</h2>
-  <div class="cards">
-    <div class="card"><div class="num">01 · READ</div><h3>Real news, every 10 minutes</h3><p>About 40 trusted sources — Nature, BBC News, The Guardian, The Verge, New Scientist and more.</p></div>
-    <div class="card"><div class="num">02 · BUILD</div><h3>A tiny world per story</h3><p>Each headline becomes a diorama on a round plinth, assembled piece by piece on air.</p></div>
-    <div class="card"><div class="num">03 · CREDIT</div><h3>Always the source</h3><p>The outlet is on screen, so you can read the original. Tragedies are never built with toys.</p></div>
+<div class="tape" aria-hidden="true"><div>
+  <span>Tiny Headlines <em>Live</em> <em>Science</em> <em>Tech</em> <em>Economy</em> <em>Internet</em> <em>Games</em></span>
+  <span>Tiny Headlines <em>Live</em> <em>Science</em> <em>Tech</em> <em>Economy</em> <em>Internet</em> <em>Games</em></span>
+  <span aria-hidden="true">Tiny Headlines <em>Live</em> <em>Science</em> <em>Tech</em> <em>Economy</em> <em>Internet</em> <em>Games</em></span>
+  <span aria-hidden="true">Tiny Headlines <em>Live</em> <em>Science</em> <em>Tech</em> <em>Economy</em> <em>Internet</em> <em>Games</em></span>
+</div></div>
+
+<main>
+<section class="intro" id="about">
+  <div class="in">
+    <div class="rv">
+      <p class="eyebrow">The news, in miniature</p>
+      <h2>Real headlines. <em>Tiny worlds.</em></h2>
+    </div>
+    <div class="rv" style="--d:.12s">
+      <p class="lead">Tiny Headlines is a 24/7 live channel. Every story comes from a trusted outlet, <strong>credited on screen</strong>, and gets its own miniature world, assembled piece by piece while the camera orbits it.</p>
+      <div class="watch">
+        <a class="btn yt" href="https://www.youtube.com/@TinyHeadlinesLive">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.5v-7l6 3.5z"/></svg>
+          Watch on YouTube</a>
+        <a class="btn tw" href="https://www.twitch.tv/tinyheadlines">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.3 2 2.5 6.6v13.1h4.6V22h2.600l2.300-2.300h3.700l5-5V2zm14.600 11.800-2.900 2.900h-4.600l-2.400 2.400v-2.400H5.200V3.800h13.700zM16 7.300v5h-1.700v-5zm-4.600 0v5H9.700v-5z"/></svg>
+          Watch on Twitch</a>
+      </div>
+    </div>
+  </div>
+  <div class="reel rv" aria-label="Dioramas seen on air">
+    <ul>
+      <li><img src="assets/d-flood.webp" width="640" height="480" loading="lazy" alt="Diorama of a flooded street in South Florida under rain clouds"><small>BBC News</small></li>
+      <li><img src="assets/d-space.webp" width="640" height="480" loading="lazy" alt="Diorama of a space fleet and marines around a campaign map"><small>PC Gamer</small></li>
+      <li><img src="assets/d-bats.webp" width="640" height="480" loading="lazy" alt="Diorama of a shrinking forest with a bat colony next to a village"><small>Phys.org</small></li>
+      <li><img src="assets/d-city.webp" width="640" height="480" loading="lazy" alt="Diorama of a busy neon city street with palm trees and a crowd"><small>The Guardian</small></li>
+      <li><img src="assets/d-lab.webp" width="640" height="480" loading="lazy" alt="Diorama of a physics lab with an X-ray beam experiment"><small>Phys.org</small></li>
+      <li><img src="assets/d-wildfires.webp" width="640" height="480" loading="lazy" alt="Diorama of a prehistoric forest beside a wildfire"><small>Phys.org</small></li>
+      <li aria-hidden="true"><img src="assets/d-flood.webp" width="640" height="480" loading="lazy" alt=""><small>BBC News</small></li>
+      <li aria-hidden="true"><img src="assets/d-space.webp" width="640" height="480" loading="lazy" alt=""><small>PC Gamer</small></li>
+      <li aria-hidden="true"><img src="assets/d-bats.webp" width="640" height="480" loading="lazy" alt=""><small>Phys.org</small></li>
+      <li aria-hidden="true"><img src="assets/d-city.webp" width="640" height="480" loading="lazy" alt=""><small>The Guardian</small></li>
+      <li aria-hidden="true"><img src="assets/d-lab.webp" width="640" height="480" loading="lazy" alt=""><small>Phys.org</small></li>
+      <li aria-hidden="true"><img src="assets/d-wildfires.webp" width="640" height="480" loading="lazy" alt=""><small>Phys.org</small></li>
+    </ul>
   </div>
 </section>
 
-<section id="play">
-  <h2>You run the show</h2>
-  <p class="lead">Vote in chat for the next story. YouTube and Twitch votes are counted together in one on-screen poll.</p>
-  <div class="cards">
-    <div class="card"><h3><code>!vote 1-3</code></h3><p>Pick the next story.</p></div>
-    <div class="card"><h3><code>+</code> / <code>-</code></h3><p>Rate the story on screen.</p></div>
-    <div class="card"><h3><code>!source</code></h3><p>Show where the story comes from.</p></div>
-    <div class="card"><h3><code>!zoom</code></h3><p>Take a closer look.</p></div>
+<section id="how">
+  <div class="in">
+    <div class="rv">
+      <p class="eyebrow">How it works</p>
+      <h2>Read. Build. <em>Credit.</em></h2>
+    </div>
+    <ol class="steps">
+      <li class="rv"><span class="n" aria-hidden="true">1</span><h3><span class="tag">READ</span>Real news, every 10 minutes</h3><p>About 40 trusted sources: Nature, BBC News, The Guardian, The Verge, New Scientist and more.</p></li>
+      <li class="rv" style="--d:.1s"><span class="n" aria-hidden="true">2</span><h3><span class="tag">BUILD</span>A tiny world per story</h3><p>Each headline becomes a diorama on a round plinth, assembled piece by piece on air.</p></li>
+      <li class="rv" style="--d:.2s"><span class="n" aria-hidden="true">3</span><h3><span class="tag">CREDIT</span>Always the source</h3><p>The outlet is on screen, so you can always read the original. Tragedies are never built with toys.</p></li>
+    </ol>
+    <p class="note rv">AI helps us build the dioramas, piece by piece. The stories belong to the outlets that reported them.</p>
+  </div>
+</section>
+
+<section class="play" id="play">
+  <div class="in">
+    <div>
+      <div class="rv">
+        <p class="eyebrow">Play along</p>
+        <h2>You run <em>the show.</em></h2>
+        <p class="lead" style="margin-top:26px">Vote in chat for the next story. YouTube and Twitch votes are counted together in <strong>one on-screen poll</strong>.</p>
+      </div>
+      <dl class="cmds rv">
+        <div><dt>!vote 1<i>-</i>3</dt><dd>Pick the next story.</dd></div>
+        <div><dt>+ <i>/</i> -</dt><dd>Rate the story on screen.</dd></div>
+        <div><dt>!source</dt><dd>Show where the story comes from.</dd></div>
+        <div><dt>!zoom</dt><dd>Take a closer look.</dd></div>
+      </dl>
+    </div>
+    <div class="poll rv" style="--d:.15s" role="img" aria-label="Illustration: chat messages from YouTube and Twitch feeding one poll with three stories">
+      <header><b>NEXT STORY</b><span class="live"><i></i>Voting</span></header>
+      <div class="bar" style="--w:46%"><b>1</b><span></span></div>
+      <div class="bar win" style="--w:88%"><b>2</b><span></span></div>
+      <div class="bar" style="--w:30%"><b>3</b><span></span></div>
+      <ul class="chat">
+        <li style="--c:var(--yt)"><u>YouTube</u>!vote 2</li>
+        <li style="--c:var(--tw)"><u>Twitch</u>!vote 2</li>
+        <li style="--c:var(--tw)"><u>Twitch</u>!vote 1</li>
+        <li style="--c:var(--yt)"><u>YouTube</u>!zoom</li>
+      </ul>
+      <footer><strong>Two chats, one poll.</strong> Type a command on either platform.</footer>
+    </div>
   </div>
 </section>
 
 <section id="screens">
-  <div class="biz">
-    <h2>Put Tiny Headlines on your screens</h2>
-    <p class="lead">Lobbies, waiting rooms, shop windows, offices: a calm, always-fresh news loop with no talking heads. Horizontal and vertical (9:16) feeds, 1080p, 24/7.</p>
-    <ul>
-      <li>Free for digital signage partners.</li>
-      <li>Optional custom branding with your logo — in exchange for a short case study.</li>
-      <li>Plays from a simple web link: no app to install.</li>
-    </ul>
-    <div class="btns"><a class="btn" href="mailto:contact@tinyheadlines.live?subject=Tiny%20Headlines%20for%20screens">Get in touch</a></div>
+  <div class="in">
+    <div class="biz rv">
+      <div>
+        <p class="eyebrow">For digital signage</p>
+        <h2>Put Tiny Headlines on your screens.</h2>
+        <p class="lead">Lobbies, waiting rooms, shop windows, offices: a calm, always-fresh news loop with no talking heads.</p>
+        <ul class="feats">
+          <li><b>Free</b>For digital signage partners.</li>
+          <li><b>Your logo on it</b>Optional custom branding, in exchange for a short case study.</li>
+          <li><b>16:9 and 9:16</b>Horizontal and vertical feeds, 1080p, 24/7.</li>
+          <li><b>Just a web link</b>Plays from a link. No app to install.</li>
+        </ul>
+        <div class="cta">
+          <a class="btn" href="mailto:contact@tinyheadlines.live?subject=Tiny%20Headlines%20for%20screens">Get in touch</a>
+          <a class="mail" href="mailto:contact@tinyheadlines.live?subject=Tiny%20Headlines%20for%20screens">contact@tinyheadlines.live</a>
+        </div>
+      </div>
+      <div class="rig" aria-hidden="true">
+        <div class="tv"><img src="assets/d-space.webp" width="640" height="480" loading="lazy" alt=""><small>16:9</small></div>
+        <div class="totem"><img src="assets/d-city.webp" width="640" height="480" loading="lazy" alt=""><small>9:16</small></div>
+      </div>
+    </div>
   </div>
 </section>
+</main>
 
-<footer>
-  © 2026 Tiny Headlines · Original generative music · Stories belong to their credited outlets ·
-  Built with <a href="https://doitpaco.com">PACO</a>
+<footer class="end">
+  <div class="in">
+    <div class="sign">
+      <img src="assets/logo.webp" width="84" height="84" alt="Tiny Headlines logo: a tiny planet with a city, a radio tower and a yellow news ticker ring">
+      <div><b>Tiny Headlines</b><span>The news, in miniature. Live 24/7.</span></div>
+    </div>
+    <nav class="links" aria-label="Channels and contact">
+      <a class="btn ghost" href="https://www.youtube.com/@TinyHeadlinesLive">YouTube</a>
+      <a class="btn ghost" href="https://www.twitch.tv/tinyheadlines">Twitch</a>
+      <a class="btn ghost" href="mailto:contact@tinyheadlines.live">Contact</a>
+    </nav>
+    <p class="credits">
+      <span>© 2026 Tiny Headlines</span>
+      <span>Original generative music</span>
+      <span>Stories belong to their credited outlets</span>
+      <span>Built with <a href="https://doitpaco.com">PACO</a></span>
+      <span><button type="button" id="ckopen">Cookie settings</button></span>
+    </p>
+  </div>
 </footer>
+
+<div class="ck" id="ck" role="region" aria-label="Cookie consent" hidden>
+  <b>Cookies? Just one kind.</b>
+  <p>We'd like to use Google Analytics to count visits. No ads, nothing else. Your call.</p>
+  <div>
+    <button class="btn ghost" type="button" data-ck="denied">Decline</button>
+    <button class="btn" type="button" data-ck="granted">Accept</button>
+  </div>
 </div>
+
+<script>
+/* consent banner → Google Analytics (GA_ID and the denied defaults live at the top of <head>) */
+(function(){
+  var d=document,box=d.getElementById('ck'),KEY='th-consent',loaded=false,choice=null;
+  try{choice=localStorage.getItem(KEY)}catch(e){}
+  function analytics(){
+    gtag('consent','update',{analytics_storage:'granted'});
+    if(loaded||!/^G-[A-Z0-9]+$/.test(GA_ID)||GA_ID==='G-XXXXXXXXXX')return; /* placeholder: load nothing */
+    loaded=true;
+    var s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;d.head.appendChild(s);
+    gtag('js',new Date());gtag('config',GA_ID);
+  }
+  function set(v){
+    try{localStorage.setItem(KEY,v)}catch(e){}
+    box.hidden=true;
+    if(v==='granted')analytics();else gtag('consent','update',{analytics_storage:'denied'});
+  }
+  box.addEventListener('click',function(e){var v=e.target.getAttribute&&e.target.getAttribute('data-ck');if(v)set(v)});
+  d.getElementById('ckopen').addEventListener('click',function(){box.hidden=false;box.querySelector('[data-ck=granted]').focus()});
+  if(choice==='granted')analytics();else if(choice!=='denied')box.hidden=false;
+})();
+</script>
+
+<script>
+(function(){
+  var d=document,root=d.documentElement,stage=d.getElementById('stage'),tv=d.getElementById('tv'),
+      snd=d.getElementById('snd'),fs=d.getElementById('fs'),YT='https://www.youtube.com',playing=false;
+  root.classList.add('js');
+
+  /* talk to the YouTube player without loading any extra script */
+  function cmd(f,a){try{tv.contentWindow.postMessage(JSON.stringify({event:'command',func:f,args:a||[]}),YT)}catch(e){}}
+  function hello(){try{tv.contentWindow.postMessage(JSON.stringify({event:'listening',id:'tv',channel:'widget'}),YT)}catch(e){}}
+  tv.addEventListener('load',hello);
+  var hi=setInterval(hello,1000);setTimeout(function(){clearInterval(hi)},12000);
+  addEventListener('message',function(e){
+    if(e.origin!==YT)return;var m;try{m=JSON.parse(e.data)}catch(x){return}
+    var s=m&&m.info&&m.info.playerState;
+    if(s===1){playing=true;stage.classList.remove('needs-tap')}
+  });
+  /* if autoplay was refused, let the visitor press YouTube's own play button */
+  setTimeout(function(){if(!playing)stage.classList.add('needs-tap')},7000);
+
+  snd.addEventListener('click',function(){
+    var on=snd.getAttribute('aria-pressed')!=='true';
+    if(on){cmd('playVideo');cmd('unMute');cmd('setVolume',[100])}else cmd('mute');
+    snd.setAttribute('aria-pressed',on);stage.classList.toggle('sound',on);
+  });
+
+  var req=stage.requestFullscreen||stage.webkitRequestFullscreen;
+  if(req){
+    fs.addEventListener('click',function(){
+      if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d);return}
+      var p=req.call(stage);
+      if(p&&p.then)p.then(function(){try{screen.orientation.lock('landscape').catch(function(){})}catch(e){}}).catch(function(){});
+    });
+    d.addEventListener('fullscreenchange',function(){
+      fs.querySelector('span').textContent=d.fullscreenElement?'Exit full screen':'Full screen';
+    });
+  }else{ /* iPhone: no element fullscreen, so hand over to the YouTube player */
+    var a=d.createElement('a');a.className=fs.className;a.id='fs';a.innerHTML=fs.innerHTML;
+    a.href='https://www.youtube.com/@TinyHeadlinesLive/live';a.querySelector('span').textContent='Open in YouTube';
+    fs.replaceWith(a);
+  }
+
+  /* cinema mode: overlays fade while nobody is touching anything */
+  var t;function wake(){stage.classList.remove('idle');clearTimeout(t);t=setTimeout(function(){
+    if(!stage.contains(d.activeElement)||d.activeElement===d.body)stage.classList.add('idle')},4500)}
+  ['pointermove','pointerdown','keydown','focusin','touchstart'].forEach(function(ev){stage.addEventListener(ev,wake,{passive:true})});
+  wake();
+
+  /* reveal on scroll */
+  var els=d.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('seen');io.unobserve(x.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){io.observe(el)});
+  }else els.forEach(function(el){el.classList.add('seen')});
+})();
+</script>
 </body>
 </html>
